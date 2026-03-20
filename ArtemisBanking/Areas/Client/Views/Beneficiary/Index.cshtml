@@ -1,0 +1,43 @@
+﻿@model List<ArtemisBanking.Core.Application.Dtos.Beneficiary.BeneficiaryDto>
+
+@{
+    Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+}
+
+<div class="card shadow p-4">
+
+    <h2 class="fw-bold text-primary mb-4">👥 Beneficiarios</h2>
+
+    <!-- AGREGAR -->
+    <form method="post" asp-action="Create" class="mb-4">
+        <div class="input-group">
+            <input name="accountNumber" class="form-control" placeholder="Número de cuenta..." required />
+            <button class="btn btn-success">Agregar</button>
+        </div>
+    </form>
+
+    <!-- LISTA -->
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Cuenta</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var b in Model)
+            {
+                <tr>
+                    <td>**** @b.SavingAccountId[^4..]</td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@b.Id"
+                           class="btn btn-danger btn-sm">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

@@ -1,0 +1,74 @@
+﻿@model ConfirmDepositViewModel
+@{
+    ViewData["Title"] = "Confirmación de Depósito";
+    Layout = "_LayoutTeller";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12 col-md-8 col-lg-6 mx-auto">
+            <div class="card shadow-sm border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-question-circle"></i> Confirmación de Depósito</h4>
+                </div>
+
+                <div class="card-body">
+
+                    <p class="mb-4">
+                        Está a punto de realizar un depósito a la cuenta cuyo titular es:
+                    </p>
+
+                    <div class="alert alert-info">
+                        <h5 class="fw-bold mb-1">@Model.ClientName</h5>
+                        <small class="text-muted">Titular de la cuenta destino</small>
+                    </div>
+
+                    <h5 class="mt-4 mb-3">Detalles del Depósito</h5>
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Número de Cuenta:</th>
+                            <td>@Model.Deposit.AccountNumber</td>
+                        </tr>
+                        <tr>
+                            <th>Monto a Depositar:</th>
+                            <td class="fw-bold text-success">RD$ @Model.Deposit.Amount.ToString("N2")</td>
+                        </tr>
+                        @if (!string.IsNullOrWhiteSpace(Model.Deposit.Description))
+                        {
+                            <tr>
+                                <th>Descripción:</th>
+                                <td>@Model.Deposit.Description</td>
+                            </tr>
+                        }
+                    </table>
+
+                    <div class="alert alert-warning mt-4">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        ¿Está seguro de realizar esta transacción?
+                    </div>
+
+                    <form asp-area="Teller" asp-controller="Deposit" asp-action="ProcessDeposit" method="post">
+                        
+                        <input type="hidden" asp-for="Deposit.AccountNumber" value="@Model.Deposit.AccountNumber"/>
+                        <input type="hidden" asp-for="Deposit.Amount" value="@Model.Deposit.Amount"/>
+                        <input type="hidden" asp-for="Deposit.Description" value="@Model.Deposit.Description"/>
+                        <input type="hidden" asp-for="ClientName" value="@Model.ClientName"/>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle"></i> Confirmar Depósito
+                            </button>
+
+                            <a asp-area="Teller" asp-controller="Deposit" asp-action="Index"
+                               class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

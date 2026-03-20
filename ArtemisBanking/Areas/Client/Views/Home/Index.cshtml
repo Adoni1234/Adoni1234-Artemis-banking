@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+
+    var account = ViewBag.Account;
+    var transactions = ViewBag.Transactions as IEnumerable<dynamic>;
+}
+
+<div class="container mt-4">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    <!-- 💳 TARJETA PRINCIPAL -->
+    <div class="card shadow-lg p-4 mb-4 text-white" style="background: linear-gradient(135deg, #4e73df, #224abe); border-radius: 15px;">
+        <h5>Cuenta Principal</h5>
+        <h3 class="mt-2">@account?.Id</h3>
+        <h2 class="mt-3">$ @account?.Balance.ToString("N2")</h2>
+    </div>
+
+    <!-- ⚡ ACCIONES RÁPIDAS -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <a asp-area="Client" asp-controller="Transfer" asp-action="Index" class="btn btn-primary w-100 p-3">
+                <i class="bi bi-arrow-left-right"></i> Transferir
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a asp-area="Client" asp-controller="Transaction" asp-action="Index" class="btn btn-dark w-100 p-3">
+                <i class="bi bi-clock-history"></i> Historial
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a asp-area="Client" asp-controller="Home" asp-action="Index" class="btn btn-success w-100 p-3">
+                <i class="bi bi-piggy-bank"></i> Mis cuentas
+            </a>
+        </div>
+    </div>
+
+    <!-- 📜 ÚLTIMAS TRANSACCIONES -->
+    <div class="card shadow p-3">
+        <h5 class="mb-3">Últimas transacciones</h5>
+
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (transactions != null && transactions.Any())
+                {
+                    foreach (var item in transactions)
+                    {
+                        <tr>
+                            <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                            <td>@item.SubType</td>
+                            <td class="@(item.Type.ToString() == "Debit" ? "text-danger" : "text-success")">
+                                @(item.Type.ToString() == "Debit" ? "-" : "+") @item.Amount.ToString("N2")
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3" class="text-center">No hay movimientos</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>

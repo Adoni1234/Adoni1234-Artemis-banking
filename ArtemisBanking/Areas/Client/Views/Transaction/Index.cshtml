@@ -1,0 +1,96 @@
+﻿@model ArtemisBanking.Core.Application.PaginatedData<ArtemisBanking.Core.Application.Dtos.Transaction.TransactionDto>
+
+@{
+    ViewData["Title"] = "Historial de Transacciones";
+    Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg p-4">
+
+        <h3 class="mb-4 text-primary">
+            <i class="bi bi-clock-history"></i> Historial de Transacciones
+        </h3>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">@ViewBag.Error</div>
+        }
+
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Monto</th>
+                    <th>Origen</th>
+                    <th>Destino</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model?.Items != null && Model.Items.Any())
+                {
+                    foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>@item.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@item.SubType</td>
+                            <td class="@(item.Type.ToString() == "Debit" ? "text-danger" : "text-success")">
+                                @(item.Type.ToString() == "Debit" ? "-" : "+") @item.Amount.ToString("N2")
+                            </td>
+                            <td>@item.Origin</td>
+                            <td>@item.Beneficiary</td>
+                            <td>@item.Status</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center">No hay transacciones</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- PAGINACIÓN -->
+        <div class="d-flex justify-content-between mt-3">
+
+            <!-- ANTERIOR -->
+            @if (Model.Pagination.CurrentPage > 1)
+            {
+                <a class="btn btn-outline-primary"
+                   asp-route-page="@(Model.Pagination.CurrentPage - 1)"
+                   asp-route-accountNumber="@ViewBag.AccountNumber">
+                    Anterior
+                </a>
+            }
+            else
+            {
+                <button class="btn btn-outline-secondary" disabled>Anterior</button>
+            }
+
+            <!-- INFO -->
+            <span class="align-self-center">
+                Página @Model.Pagination.CurrentPage de @Model.Pagination.TotalPages
+            </span>
+
+            <!-- SIGUIENTE -->
+            @if (Model.Pagination.CurrentPage < Model.Pagination.TotalPages)
+            {
+                <a class="btn btn-outline-primary"
+                   asp-route-page="@(Model.Pagination.CurrentPage + 1)"
+                   asp-route-accountNumber="@ViewBag.AccountNumber">
+                    Siguiente
+                </a>
+            }
+            else
+            {
+                <button class="btn btn-outline-secondary" disabled>Siguiente</button>
+            }
+
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,93 @@
+﻿@using ArtemisBanking.Core.Application.Dtos.SavingAccount
+@using ArtemisBanking.Core.Application.Dtos.CreditCard
+@using ArtemisBanking.Core.Application.Dtos.Loan
+
+@{
+    Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+
+    var accounts = ViewBag.Accounts as List<SavingAccountDto>;
+    var cards = ViewBag.Cards as List<CreditCardDto>;
+    var loans = ViewBag.Loans as List<LoanDto>;
+}
+
+<div class="row">
+
+    <!-- TARJETA -->
+    <div class="col-md-6">
+        <div class="card shadow p-4 mb-4">
+
+            <h4 class="text-primary">💳 Pago de Tarjeta</h4>
+
+            <form method="post" asp-action="PayCreditCard">
+
+                <select name="accountNumber" class="form-select mb-2" required>
+                    @foreach (var acc in accounts ?? new())
+                    {
+                        <option value="@acc.Id">
+                            **** @acc.Id[^4..] - RD$ @acc.Balance
+                        </option>
+                    }
+                </select>
+
+                <select name="cardNumber" class="form-select mb-2" required>
+                    @foreach (var c in cards ?? new())
+                    {
+                        <option value="@c.CardNumber">
+                            **** @c.CardNumber[^4..]
+                        </option>
+                    }
+                </select>
+
+                <input name="amount" type="number" step="0.01" class="form-control mb-2" placeholder="Monto" required />
+
+                <button class="btn btn-primary w-100">Pagar tarjeta</button>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- PRÉSTAMO -->
+    <div class="col-md-6">
+        <div class="card shadow p-4 mb-4">
+
+            <h4 class="text-success">🏦 Pago de Préstamo</h4>
+
+            <form method="post" asp-action="PayLoan">
+
+                <select name="accountNumber" class="form-select mb-2" required>
+                    @foreach (var acc in accounts ?? new())
+                    {
+                        <option value="@acc.Id">
+                            **** @acc.Id[^4..] - RD$ @acc.Balance
+                        </option>
+                    }
+                </select>
+
+                <select name="loanNumber" class="form-select mb-2" required>
+                    @foreach (var l in loans ?? new())
+                    {
+                        <option value="@l.Id">
+                            Préstamo #@l.Id
+                        </option>
+                    }
+                </select>
+
+                <input name="amount" type="number" step="0.01" class="form-control mb-2" placeholder="Monto" required />
+
+                <button class="btn btn-success w-100">Pagar préstamo</button>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+@if (ViewBag.Success != null)
+{
+    <div class="alert alert-success">@ViewBag.Success</div>
+}

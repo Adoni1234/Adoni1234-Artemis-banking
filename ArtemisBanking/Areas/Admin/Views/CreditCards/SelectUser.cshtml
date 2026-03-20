@@ -1,0 +1,47 @@
+@model List<ClientsWithDebtViewModel>
+@{
+    ViewBag.Title = "Select a Client";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container-fluid py-3">
+
+    <div class="mb-4">
+        @await Component.InvokeAsync("AverageDebtPerUser")
+    </div>
+
+
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header fw-bold">
+                    Filters
+                </div>
+                <div class="card-body">
+                    <form asp-controller="CreditCards" asp-action="SelectUser" method="get">
+                        <div class="input-group">
+                            <span class="input-group-text">ID Card</span>
+                            <input class="form-control" type="text" placeholder="00000000001" name="identityCardNumber" />
+                            <button type="submit" class="btn btn-outline-primary">
+                                Filter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <form asp-controller="CreditCards" asp-action="SelectUserPost" method="post">
+        <div class="mb-4">
+            @{ await Html.RenderPartialAsync("ClientsPartial", Model); }
+        </div>
+
+        <div class="d-flex justify-content-center mt-2">
+            <button type="submit" class="btn btn-success me-2">Siguiente paso</button>
+            <a asp-controller="CreditCards" asp-action="Index" class="btn btn-warning">Volver</a>
+        </div>
+    </form>
+
+</div>

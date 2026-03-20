@@ -1,0 +1,62 @@
+﻿@using ArtemisBanking.Core.Application.Dtos.Beneficiary
+@using ArtemisBanking.Core.Application.Dtos.SavingAccount
+
+@{
+    Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+
+    var accounts = ViewBag.Accounts as List<SavingAccountDto>;
+    var beneficiaries = ViewBag.Beneficiaries as List<BeneficiaryDto>;
+}
+
+<div class="card shadow p-4">
+    <h2 class="fw-bold mb-4 text-primary">💸 Transferir dinero</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    @if (ViewBag.Success != null)
+    {
+        <div class="alert alert-success">@ViewBag.Success</div>
+    }
+
+    <form method="post" asp-action="Index">
+
+        <!-- Cuenta origen -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Cuenta origen</label>
+            <select name="FromAccountNumber" class="form-select" required>
+                @foreach (var acc in accounts ?? new List<SavingAccountDto>())
+                {
+                    <option value="@acc.Id">
+                        **** @acc.Id[^4..] - RD$ @acc.Balance.ToString("N2")
+                    </option>
+                }
+            </select>
+        </div>
+
+        <!-- Beneficiario -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Beneficiario</label>
+            <select name="ToAccountNumber" class="form-select" required>
+                @foreach (var b in beneficiaries ?? new List<BeneficiaryDto>())
+                {
+                    <option value="@b.SavingAccountId">
+                        **** @b.SavingAccountId[^4..]
+                    </option>
+                }
+            </select>
+        </div>
+
+        <!-- Monto -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Monto (RD$)</label>
+            <input name="Amount" type="number" step="0.01" min="1" class="form-control" required />
+        </div>
+
+        <button class="btn btn-primary w-100 fw-bold">
+            Transferir dinero
+        </button>
+    </form>
+</div>

@@ -1,0 +1,56 @@
+﻿@model ConfirmCreditCardPaymentViewModel
+@{
+    ViewData["Title"] = "Confirmar Pago de Tarjeta";
+    Layout = "_LayoutTeller";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12 col-md-8 col-lg-6 mx-auto">
+            <div class="card shadow-sm border-info">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0"><i class="bi bi-exclamation-circle"></i> Confirmar Pago de Tarjeta</h4>
+                </div>
+                <div class="card-body">
+
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        Está a punto de realizar un pago a la tarjeta del cliente:
+                        <strong>@Model.CardOwnerName</strong>.
+                    </div>
+
+                    <h5 class="mb-3">Detalles del Pago</h5>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Cuenta Origen</th>
+                            <td>@Model.Payment.SourceAccountNumber</td>
+                        </tr>
+                        <tr>
+                            <th>Tarjeta de Crédito</th>
+                            <td>@Model.Payment.CreditCardNumber</td>
+                        </tr>
+                        <tr>
+                            <th>Monto</th>
+                            <td class="fw-bold text-info">$@Model.Payment.Amount.ToString("N2")</td>
+                        </tr>
+                    </table>
+
+                    <form asp-action="ProcessPayment" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="Payment.SourceAccountNumber" />
+                        <input type="hidden" asp-for="Payment.CreditCardNumber" />
+                        <input type="hidden" asp-for="Payment.Amount" />
+                        <input type="hidden" asp-for="Payment.Description" />
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-info text-white">Confirmar Pago</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
