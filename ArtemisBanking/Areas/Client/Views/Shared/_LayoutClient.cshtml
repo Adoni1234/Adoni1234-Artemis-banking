@@ -70,33 +70,6 @@
             <i class="bi bi-cash-coin"></i>
             <span class="text-center">Pagos</span>
         </a>
-
-
-
-        <a asp-area="Admin" asp-controller="Users" asp-action="Index"
-           class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Users" ? "active" : "")">
-            <i class="bi bi-people"></i>
-            <span class="text-center">Usuarios</span>
-        </a>
-
-        <a asp-area="Admin" asp-controller="Loans" asp-action="Index"
-           class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Loans" ? "active" : "")">
-            <i class="bi bi-box-seam"></i>
-            <span class="text-center">Préstamos</span>
-        </a>
-
-        <a asp-area="Admin" asp-controller="CreditCards" asp-action="Index"
-           class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "CreditCards" ? "active" : "")">
-            <i class="bi bi-credit-card"></i>
-            <span class="text-center">Tarjetas de crédito</span>
-        </a>
-
-        <a asp-area="Admin" asp-controller="SavingAccounts" asp-action="Index"
-           class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "SavingAccounts" ? "active" : "")">
-            <i class="bi bi-piggy-bank"></i>
-            <span class="text-center">Cuentas de ahorro</span>
-        </a>
-
     </div>
 
     <!-- ======= CONTENIDO PRINCIPAL ======= -->
