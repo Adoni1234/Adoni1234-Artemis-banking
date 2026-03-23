@@ -4,40 +4,94 @@
     Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
 }
 
-<div class="card shadow p-4">
+<style>
+    .beneficiary-card {
+        border-radius: 15px;
+        transition: 0.3s;
+        border: none;
+    }
+
+    .beneficiary-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0px 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .account-mask {
+        letter-spacing: 2px;
+        color: #6c757d;
+    }
+
+    .btn-delete {
+        border-radius: 10px;
+        transition: 0.2s;
+    }
+
+    .btn-delete:hover {
+        transform: scale(1.05);
+    }
+
+    .input-modern {
+        border-radius: 12px;
+        padding: 12px;
+    }
+</style>
+
+<div class="card shadow-lg p-4 border-0">
 
     <h2 class="fw-bold text-primary mb-4">👥 Beneficiarios</h2>
 
-    <!-- AGREGAR -->
+    <!-- ➕ AGREGAR BENEFICIARIO -->
     <form method="post" asp-action="Create" class="mb-4">
         <div class="input-group">
-            <input name="accountNumber" class="form-control" placeholder="Número de cuenta..." required />
-            <button class="btn btn-success">Agregar</button>
+            <span class="input-group-text bg-white">
+                <i class="bi bi-person-plus"></i>
+            </span>
+            <input name="accountNumber" class="form-control input-modern"
+                   placeholder="Número de cuenta del beneficiario..." required />
+            <button class="btn btn-success px-4">
+                Agregar
+            </button>
         </div>
     </form>
 
-    <!-- LISTA -->
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Cuenta</th>
-                <th>Acción</th>
-            </tr>
-        </thead>
-        <tbody>
+    <!-- 📋 LISTA -->
+    @if (!Model.Any())
+    {
+        <div class="text-center text-muted py-4">
+            <i class="bi bi-people" style="font-size: 40px;"></i>
+            <p class="mt-2">No tienes beneficiarios agregados</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-3">
             @foreach (var b in Model)
             {
-                <tr>
-                    <td>**** @b.SavingAccountId[^4..]</td>
-                    <td>
-                        <a asp-action="Delete" asp-route-id="@b.Id"
-                           class="btn btn-danger btn-sm">
-                            Eliminar
-                        </a>
-                    </td>
-                </tr>
+                <div class="col-md-6">
+                    <div class="card beneficiary-card shadow-sm p-3">
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <!-- Info -->
+                            <div>
+                                <h6 class="mb-1">Beneficiario</h6>
+                                <span class="account-mask">
+                                    **** **** @b.SavingAccountId[^4..]
+                                </span>
+                            </div>
+
+                            <!-- Acción -->
+                            <a asp-action="Delete" asp-route-id="@b.Id"
+                               class="btn btn-danger btn-sm btn-delete">
+                                <i class="bi bi-trash"></i>
+                            </a>
+
+                        </div>
+
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
+        </div>
+    }
 
 </div>
