@@ -6,6 +6,59 @@
     var transactions = ViewBag.Transactions as IEnumerable<dynamic>;
 }
 
+<style>
+    .card-balance {
+        background: linear-gradient(135deg, #4e73df, #224abe);
+        border-radius: 20px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-balance::after {
+        content: "";
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        top: -50px;
+        right: -50px;
+    }
+
+    .quick-card {
+        border-radius: 15px;
+        transition: 0.3s;
+        cursor: pointer;
+        border: none;
+    }
+
+    .quick-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .icon-box {
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    .table-custom th {
+        font-weight: 600;
+        color: #6c757d;
+    }
+
+    .badge-soft-success {
+        background-color: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .badge-soft-danger {
+        background-color: #f8d7da;
+        color: #842029;
+    }
+</style>
+
 <div class="container mt-4">
 
     @if (ViewBag.Error != null)
@@ -14,67 +67,110 @@
     }
 
     <!-- 💳 TARJETA PRINCIPAL -->
-    <div class="card shadow-lg p-4 mb-4 text-white" style="background: linear-gradient(135deg, #4e73df, #224abe); border-radius: 15px;">
-        <h5>Cuenta Principal</h5>
-        <h3 class="mt-2">@account?.Id</h3>
-        <h2 class="mt-3">$ @account?.Balance.ToString("N2")</h2>
+    <div class="card card-balance shadow-lg p-4 mb-4">
+        <div class="d-flex justify-content-between">
+            <div>
+                <h6 class="text-white-50">Cuenta Principal</h6>
+                <h4>@account?.Id</h4>
+                <h1 class="fw-bold mt-3">$ @account?.Balance.ToString("N2")</h1>
+            </div>
+            <div class="text-end">
+                <i class="bi bi-credit-card-2-front" style="font-size: 40px;"></i>
+            </div>
+        </div>
     </div>
 
     <!-- ⚡ ACCIONES RÁPIDAS -->
     <div class="row mb-4">
+
         <div class="col-md-4">
-            <a asp-area="Client" asp-controller="Transfer" asp-action="Index" class="btn btn-primary w-100 p-3">
-                <i class="bi bi-arrow-left-right"></i> Transferir
+            <a asp-area="Client" asp-controller="Transfer" asp-action="Index">
+                <div class="card quick-card shadow-sm p-4 text-center">
+                    <div class="icon-box text-primary">
+                        <i class="bi bi-arrow-left-right"></i>
+                    </div>
+                    <h6 class="fw-bold">Transferir</h6>
+                    <small class="text-muted">Envía dinero rápido</small>
+                </div>
             </a>
         </div>
 
         <div class="col-md-4">
-            <a asp-area="Client" asp-controller="Transaction" asp-action="Index" class="btn btn-dark w-100 p-3">
-                <i class="bi bi-clock-history"></i> Historial
+            <a asp-area="Client" asp-controller="Transaction" asp-action="Index">
+                <div class="card quick-card shadow-sm p-4 text-center">
+                    <div class="icon-box text-dark">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <h6 class="fw-bold">Historial</h6>
+                    <small class="text-muted">Ver movimientos</small>
+                </div>
             </a>
         </div>
 
         <div class="col-md-4">
-            <a asp-area="Client" asp-controller="Home" asp-action="Index" class="btn btn-success w-100 p-3">
-                <i class="bi bi-piggy-bank"></i> Mis cuentas
+            <a asp-area="Client" asp-controller="Home" asp-action="Index">
+                <div class="card quick-card shadow-sm p-4 text-center">
+                    <div class="icon-box text-success">
+                        <i class="bi bi-piggy-bank"></i>
+                    </div>
+                    <h6 class="fw-bold">Mis cuentas</h6>
+                    <small class="text-muted">Gestiona tus cuentas</small>
+                </div>
             </a>
         </div>
+
     </div>
 
-    <!-- 📜 ÚLTIMAS TRANSACCIONES -->
-    <div class="card shadow p-3">
-        <h5 class="mb-3">Últimas transacciones</h5>
+    <!-- 📊 ÚLTIMAS TRANSACCIONES -->
+    <div class="card shadow-lg p-4 border-0">
+        <div class="d-flex justify-content-between mb-3">
+            <h5 class="fw-bold">Últimas transacciones</h5>
+            <a asp-area="Client" asp-controller="Transaction" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                Ver todas
+            </a>
+        </div>
 
-        <table class="table table-hover">
-            <thead class="table-light">
-                <tr>
-                    <th>Fecha</th>
-                    <th>Tipo</th>
-                    <th>Monto</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (transactions != null && transactions.Any())
-                {
-                    foreach (var item in transactions)
+        <div class="table-responsive">
+            <table class="table align-middle table-custom">
+                <thead class="table-light">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th class="text-end">Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (transactions != null && transactions.Any())
+                    {
+                        foreach (var item in transactions)
+                        {
+                            var isDebit = item.Type.ToString() == "Debit";
+                            <tr>
+                                <td>@item.Date.ToString("dd/MM/yyyy")</td>
+
+                                <td>
+                                    <span class="badge @(isDebit ? "badge-soft-danger" : "badge-soft-success")">
+                                        @item.SubType
+                                    </span>
+                                </td>
+
+                                <td class="text-end fw-bold @(isDebit ? "text-danger" : "text-success")">
+                                    @(isDebit ? "-" : "+") $ @item.Amount.ToString("N2")
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
                     {
                         <tr>
-                            <td>@item.Date.ToString("dd/MM/yyyy")</td>
-                            <td>@item.SubType</td>
-                            <td class="@(item.Type.ToString() == "Debit" ? "text-danger" : "text-success")">
-                                @(item.Type.ToString() == "Debit" ? "-" : "+") @item.Amount.ToString("N2")
+                            <td colspan="3" class="text-center text-muted">
+                                No hay movimientos recientes
                             </td>
                         </tr>
                     }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="3" class="text-center">No hay movimientos</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>
