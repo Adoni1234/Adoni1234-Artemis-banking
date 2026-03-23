@@ -10,71 +10,148 @@
     var loans = ViewBag.Loans as List<LoanDto>;
 }
 
-<div class="row">
+<style>
+    .payment-card {
+        border-radius: 20px;
+        transition: 0.3s;
+        border: none;
+    }
 
-    <!-- TARJETA -->
+    .payment-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 15px 30px rgba(0,0,0,0.1);
+    }
+
+    .input-modern {
+        border-radius: 12px;
+        padding: 12px;
+    }
+
+    .icon-input {
+        background: white;
+        border-right: 0;
+    }
+
+    .btn-modern {
+        border-radius: 12px;
+        font-weight: 500;
+        padding: 10px;
+    }
+</style>
+
+<div class="row g-4">
+
+    <!-- 💳 TARJETA -->
     <div class="col-md-6">
-        <div class="card shadow p-4 mb-4">
+        <div class="card payment-card shadow-sm p-4 h-100">
 
-            <h4 class="text-primary">💳 Pago de Tarjeta</h4>
+            <h5 class="fw-bold text-primary mb-3">
+                <i class="bi bi-credit-card"></i> Pago de Tarjeta
+            </h5>
 
             <form method="post" asp-action="PayCreditCard">
 
-                <select name="accountNumber" class="form-select mb-2" required>
-                    @foreach (var acc in accounts ?? new())
-                    {
-                        <option value="@acc.Id">
-                            **** @acc.Id[^4..] - RD$ @acc.Balance
-                        </option>
-                    }
-                </select>
+                <!-- Cuenta -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text icon-input">
+                        <i class="bi bi-bank"></i>
+                    </span>
+                    <select name="accountNumber" class="form-select input-modern" required>
+                        @foreach (var acc in accounts ?? new())
+                        {
+                            <option value="@acc.Id">
+                                **** @acc.Id[^4..] | Balance: RD$ @acc.Balance.ToString("N2")
+                            </option>
+                        }
+                    </select>
+                </div>
 
-                <select name="cardNumber" class="form-select mb-2" required>
-                    @foreach (var c in cards ?? new())
-                    {
-                        <option value="@c.CardNumber">
-                            **** @c.CardNumber[^4..]
-                        </option>
-                    }
-                </select>
+                <!-- Tarjeta -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text icon-input">
+                        <i class="bi bi-credit-card-2-front"></i>
+                    </span>
+                    <select name="cardNumber" class="form-select input-modern" required>
+                        @foreach (var c in cards ?? new())
+                        {
+                            <option value="@c.CardNumber">
+                                **** **** **** @c.CardNumber[^4..]
+                            </option>
+                        }
+                    </select>
+                </div>
 
-                <input name="amount" type="number" step="0.01" class="form-control mb-2" placeholder="Monto" required />
+                <!-- Monto -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text icon-input">
+                        RD$
+                    </span>
+                    <input name="amount" type="number" step="0.01"
+                           class="form-control input-modern"
+                           placeholder="Monto a pagar" required />
+                </div>
 
-                <button class="btn btn-primary w-100">Pagar tarjeta</button>
+                <button class="btn btn-primary btn-modern w-100">
+                    Pagar tarjeta
+                </button>
             </form>
 
         </div>
     </div>
 
-    <!-- PRÉSTAMO -->
+    <!-- 🏦 PRÉSTAMO -->
     <div class="col-md-6">
-        <div class="card shadow p-4 mb-4">
+        <div class="card payment-card shadow-sm p-4 h-100">
 
-            <h4 class="text-success">🏦 Pago de Préstamo</h4>
+            <h5 class="fw-bold text-success mb-3">
+                <i class="bi bi-cash-coin"></i> Pago de Préstamo
+            </h5>
 
             <form method="post" asp-action="PayLoan">
 
-                <select name="accountNumber" class="form-select mb-2" required>
-                    @foreach (var acc in accounts ?? new())
-                    {
-                        <option value="@acc.Id">
-                            **** @acc.Id[^4..] - RD$ @acc.Balance
-                        </option>
-                    }
-                </select>
+                <!-- Cuenta -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text icon-input">
+                        <i class="bi bi-bank"></i>
+                    </span>
+                    <select name="accountNumber" class="form-select input-modern" required>
+                        @foreach (var acc in accounts ?? new())
+                        {
+                            <option value="@acc.Id">
+                                **** @acc.Id[^4..] | Balance: RD$ @acc.Balance.ToString("N2")
+                            </option>
+                        }
+                    </select>
+                </div>
 
-                <select name="loanNumber" class="form-select mb-2" required>
-                    @foreach (var l in loans ?? new())
-                    {
-                        <option value="@l.Id">
-                            Préstamo #@l.Id
-                        </option>
-                    }
-                </select>
+                <!-- Préstamo -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text icon-input">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </span>
+                    <select name="loanNumber" class="form-select input-modern" required>
+                        @foreach (var l in loans ?? new())
+                        {
+                            <option value="@l.Id">
+                                Préstamo #@l.Id
+                            </option>
+                        }
+                    </select>
+                </div>
 
-                <input name="amount" type="number" step="0.01" class="form-control mb-2" placeholder="Monto" required />
+                <!-- Monto -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text icon-input">
+                        RD$
+                    </span>
+                    <input name="amount" type="number" step="0.01"
+                           class="form-control input-modern"
+                           placeholder="Monto a pagar" required />
+                </div>
 
-                <button class="btn btn-success w-100">Pagar préstamo</button>
+                <button class="btn btn-success btn-modern w-100">
+                    Pagar préstamo
+                </button>
             </form>
 
         </div>
@@ -82,12 +159,17 @@
 
 </div>
 
+<!-- 🔔 ALERTAS -->
 @if (ViewBag.Error != null)
 {
-    <div class="alert alert-danger">@ViewBag.Error</div>
+    <div class="alert alert-danger mt-3 shadow-sm">
+        <i class="bi bi-exclamation-triangle"></i> @ViewBag.Error
+    </div>
 }
 
 @if (ViewBag.Success != null)
 {
-    <div class="alert alert-success">@ViewBag.Success</div>
+    <div class="alert alert-success mt-3 shadow-sm">
+        <i class="bi bi-check-circle"></i> @ViewBag.Success
+    </div>
 }
